@@ -12,6 +12,9 @@ app.use(cors());
 app.get("/", (req, res) => {
     res.send("Lost & Found API Running 🚀");
 });
+app.get("/api/items", (req, res) => {
+    res.send("Items route working");
+});
 
 // connect DB
 mongoose.connect(process.env.MONGO_URI)
