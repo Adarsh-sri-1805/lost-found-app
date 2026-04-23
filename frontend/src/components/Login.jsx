@@ -3,16 +3,33 @@ import API from "../api";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState({
+    email: "",
+    password: ""
+  });
+
   const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await API.post("/login", form);
-    localStorage.setItem("token", res.data.token);
+    try {
+      const res = await API.post("/login", form);
 
-    navigate("/dashboard");
+      localStorage.setItem("token", res.data.token);
+      navigate("/dashboard");
+
+    } catch (err) {
+      console.log(err.response?.data);
+      alert(err.response?.data?.msg || "Login failed");
+    }
   };
 
   return (
@@ -20,13 +37,22 @@ function Login() {
       <h2>Login</h2>
 
       <form onSubmit={handleSubmit}>
-        <input placeholder="Email"
-          onChange={(e)=>setForm({...form, email:e.target.value})} />
+        <input
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+        />
 
-        <input type="password" placeholder="Password"
-          onChange={(e)=>setForm({...form, password:e.target.value})} />
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={handleChange}
+        />
 
-        <button>Login</button>
+        <button type="submit">Login</button>
       </form>
     </div>
   );
